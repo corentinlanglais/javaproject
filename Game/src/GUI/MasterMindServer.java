@@ -15,17 +15,23 @@ import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.RowSpec;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.JScrollPane;
+import java.awt.Font;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 
 public class MasterMindServer {
 
-	private JFrame frame;
+	private JFrame frmMastermindServer;
 	private JTextField textField;
-	private JPanel lists;
 	private JButton btnMarche;
 	private JButton btnArrt;
 	private JLabel lblPort;
+	private JPanel panel;
+	private JScrollPane scrollPane;
 	private JTable playerList;
-	private JTable matchList;
 
 	/**
 	 * Launch the application.
@@ -35,7 +41,7 @@ public class MasterMindServer {
 			public void run() {
 				try {
 					MasterMindServer window = new MasterMindServer();
-					window.frame.setVisible(true);
+					window.frmMastermindServer.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -54,21 +60,24 @@ public class MasterMindServer {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmMastermindServer = new JFrame();
+		frmMastermindServer.setFont(new Font("Arial", Font.PLAIN, 12));
+		frmMastermindServer.setTitle("MasterMind Server");
+		frmMastermindServer.setResizable(false);
+		frmMastermindServer.setBounds(100, 100, 800, 500);
+		frmMastermindServer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel header = new JPanel();
-		frame.getContentPane().add(header, BorderLayout.NORTH);
+		frmMastermindServer.getContentPane().add(header, BorderLayout.NORTH);
 		header.setLayout(new FormLayout(new ColumnSpec[] {
 				ColumnSpec.decode("6px"),
 				ColumnSpec.decode("78px"),
 				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
 				ColumnSpec.decode("68px"),
 				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
-				ColumnSpec.decode("44px"),
+				ColumnSpec.decode("246px"),
 				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
-				ColumnSpec.decode("36px"),
+				ColumnSpec.decode("48px"),
 				FormFactory.RELATED_GAP_COLSPEC,
 				FormFactory.DEFAULT_COLSPEC,},
 			new RowSpec[] {
@@ -91,15 +100,52 @@ public class MasterMindServer {
 		header.add(textField, "10, 2, left, center");
 		textField.setColumns(10);
 		
-		lists = new JPanel();
-		frame.getContentPane().add(lists, BorderLayout.CENTER);
-		lists.setLayout(new GridLayout(0, 2, 0, 0));
+		panel = new JPanel();
+		frmMastermindServer.getContentPane().add(panel, BorderLayout.CENTER);
 		
-		playerList = new JTable();
-		lists.add(playerList);
+		scrollPane = new JScrollPane();
+		GroupLayout gl_panel = new GroupLayout(panel);
+		gl_panel.setHorizontalGroup(
+			gl_panel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addGap(34)
+					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 261, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(499, Short.MAX_VALUE))
+		);
+		gl_panel.setVerticalGroup(
+			gl_panel.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addContainerGap(66, Short.MAX_VALUE)
+					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 323, GroupLayout.PREFERRED_SIZE)
+					.addGap(46))
+		);
 		
-		matchList = new JTable();
-		lists.add(matchList);
+		String[] columnNames = {"First Name",
+                "Last Name",
+                "Sport",
+                "# of Years",
+                "Vegetarian"};
+		
+		Object[][] data = {
+			    {"Kathy", "Smith",
+			     "Snowboarding", new Integer(5), new Boolean(false)},
+			    {"John", "Doe",
+			     "Rowing", new Integer(3), new Boolean(true)},
+			    {"Sue", "Black",
+			     "Knitting", new Integer(2), new Boolean(false)},
+			    {"Jane", "White",
+			     "Speed reading", new Integer(20), new Boolean(true)},
+			    {"Joe", "Brown",
+			     "Pool", new Integer(10), new Boolean(false)}
+			};
+		
+		playerList = new JTable(data,columnNames);
+		scrollPane.setViewportView(playerList);
+		panel.setLayout(gl_panel);
+		
+		
+		
+		
+		
 	}
-
 }
