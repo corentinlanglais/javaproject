@@ -19,25 +19,39 @@ import game.*;
 public class Server{
 	
 	private int port;
+	private ServerSocket socket;
+	private ManageClient mServerThread;
 	/**
 	 * 
 	 */
 	public Server(int pPort) {
-		this.port = pPort;
-
-		// playerList.add(new Player());
-
-		ServerSocket socket;
+		this.port = pPort;		
+	}
+	
+	public void start(){
+		// playerList.add(new Player());	
 		
 		try {
-			socket = new ServerSocket(this.port);
-			Thread t = new Thread(new ManageClient(socket));
-			t.start();
+			this.socket = new ServerSocket(this.port);
+			this.mServerThread = new ManageClient(socket);
+			this.mServerThread.start();
 			System.out.println("Server lancé sur le port : " + this.port + " !");
 
 		} catch (IOException e) {
 
 			e.printStackTrace();
 		}
+	}
+	
+	public void stop(){
+		try{
+			this.mServerThread.setIsRunning(false);
+			this.socket.close();
+			
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+		
 	}
 }

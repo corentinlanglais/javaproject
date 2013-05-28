@@ -21,17 +21,33 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.JSeparator;
+import javax.swing.JSlider;
+import javax.swing.JProgressBar;
+import javax.swing.JToggleButton;
+import javax.swing.JSpinner;
+import javax.swing.JPasswordField;
+import javax.swing.JScrollBar;
+import javax.swing.Popup;
+import javax.swing.PopupFactory;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import network.*;
 
 public class MasterMindServer {
 
 	private JFrame frmMastermindServer;
-	private JTextField textField;
-	private JButton btnMarche;
-	private JButton btnArrt;
+	private JTextField serverPort;
 	private JLabel lblPort;
 	private JPanel panel;
 	private JScrollPane scrollPane;
 	private JTable playerList;
+	private JSeparator separator;
+	private JToggleButton tglbtnMarche;
 
 	/**
 	 * Launch the application.
@@ -71,9 +87,9 @@ public class MasterMindServer {
 		frmMastermindServer.getContentPane().add(header, BorderLayout.NORTH);
 		header.setLayout(new FormLayout(new ColumnSpec[] {
 				ColumnSpec.decode("6px"),
-				ColumnSpec.decode("78px"),
+				ColumnSpec.decode("164px"),
 				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
-				ColumnSpec.decode("68px"),
+				ColumnSpec.decode("110px"),
 				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
 				ColumnSpec.decode("246px"),
 				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
@@ -84,62 +100,104 @@ public class MasterMindServer {
 				FormFactory.LINE_GAP_ROWSPEC,
 				RowSpec.decode("32px"),}));
 		
-		btnMarche = new JButton("Marche");
-		header.add(btnMarche, "2, 2, left, top");
+		tglbtnMarche = new JToggleButton("Marche");
+		tglbtnMarche.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				
+				Server server;
+				String vServerPort = serverPort.getText();
+				
+				if(vServerPort.isEmpty()){
+					System.out.println("empty");
+					 
+				}else{
+					server = new Server(Integer.parseInt(vServerPort));
+					
+					if(tglbtnMarche.isSelected()){
+						tglbtnMarche.setText("En Marche");
+						server.start();
+					}else{
+						tglbtnMarche.setText("A l'arrêt");
+						server.stop();
+						
+					}
+				}
+				
+				
+				
+			}
+		});
 		
-		btnArrt = new JButton("Arr\u00EAt");
-		header.add(btnArrt, "4, 2, left, top");
+		header.add(tglbtnMarche, "2, 2");
 		
 		lblPort = new JLabel("Port");
 		lblPort.setHorizontalAlignment(SwingConstants.CENTER);
 		header.add(lblPort, "8, 2, left, center");
 		
-		textField = new JTextField();
-		lblPort.setLabelFor(textField);
-		textField.setHorizontalAlignment(SwingConstants.CENTER);
-		header.add(textField, "10, 2, left, center");
-		textField.setColumns(10);
+		serverPort = new JTextField();
+		lblPort.setLabelFor(serverPort);
+		serverPort.setHorizontalAlignment(SwingConstants.CENTER);
+		header.add(serverPort, "10, 2, left, center");
+		serverPort.setColumns(10);
 		
 		panel = new JPanel();
 		frmMastermindServer.getContentPane().add(panel, BorderLayout.CENTER);
 		
 		scrollPane = new JScrollPane();
+		
+		JLabel lblListeDesJoueurs = new JLabel("Liste des joueurs connect\u00E9s");
+		
+		separator = new JSeparator();
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel.createSequentialGroup()
-					.addGap(34)
-					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 261, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(499, Short.MAX_VALUE))
+					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(separator, GroupLayout.DEFAULT_SIZE, 774, Short.MAX_VALUE))
+						.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+							.addGroup(gl_panel.createSequentialGroup()
+								.addGap(134)
+								.addComponent(lblListeDesJoueurs))
+							.addGroup(gl_panel.createSequentialGroup()
+								.addGap(27)
+								.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 329, GroupLayout.PREFERRED_SIZE))))
+					.addContainerGap())
 		);
 		gl_panel.setVerticalGroup(
 			gl_panel.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_panel.createSequentialGroup()
-					.addContainerGap(66, Short.MAX_VALUE)
-					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 323, GroupLayout.PREFERRED_SIZE)
-					.addGap(46))
+					.addContainerGap()
+					.addComponent(separator, GroupLayout.PREFERRED_SIZE, 2, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+					.addComponent(lblListeDesJoueurs)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 186, GroupLayout.PREFERRED_SIZE)
+					.addGap(184))
 		);
 		
-		String[] columnNames = {"First Name",
-                "Last Name",
-                "Sport",
-                "# of Years",
-                "Vegetarian"};
+		String[] columnNames = {"Pseudo",
+                "Adresse IP",
+                "Meilleur score"};
 		
 		Object[][] data = {
 			    {"Kathy", "Smith",
-			     "Snowboarding", new Integer(5), new Boolean(false)},
+			     "Snowboarding"},
 			    {"John", "Doe",
-			     "Rowing", new Integer(3), new Boolean(true)},
+			     "Rowing"},
 			    {"Sue", "Black",
-			     "Knitting", new Integer(2), new Boolean(false)},
+			     "Knitting"},
 			    {"Jane", "White",
-			     "Speed reading", new Integer(20), new Boolean(true)},
+			     "Speed reading"},
 			    {"Joe", "Brown",
-			     "Pool", new Integer(10), new Boolean(false)}
+			     "Pool"}
 			};
 		
 		playerList = new JTable(data,columnNames);
+		playerList.setToolTipText("Liste des joueurs connect\u00E9s");
+		playerList.setShowVerticalLines(false);
 		scrollPane.setViewportView(playerList);
 		panel.setLayout(gl_panel);
 		

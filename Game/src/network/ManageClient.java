@@ -15,18 +15,31 @@ import game.*;
  * @author colangla
  *
  */
-public class ManageClient implements Runnable {
+public class ManageClient extends Thread {
 
 	private ServerSocket socketserver;
     private Socket socket; 
+    private Boolean isRunning;
 	
 	/**
 	 * 
 	 */
 	public ManageClient(ServerSocket pSocket) {
 		this.socketserver = pSocket;
+		this.isRunning = true;
 	}
 	
+	/**
+	 * Getter / Setter
+	 */
+	public Boolean getIsRunning() {
+		return isRunning;
+	}
+
+	public void setIsRunning(Boolean isRunning) {
+		this.isRunning = isRunning;
+	}
+
 	public void run() {
 		
 		BufferedReader in;
@@ -34,14 +47,14 @@ public class ManageClient implements Runnable {
 
 		try {
 			
-			while (true) {
+			while (isRunning) {
 				
 				this.socket = this.socketserver.accept(); 
 				System.out.println("Server : Un client vient de se connecter !");
 				
-				out = new PrintWriter(this.socket.getOutputStream());
-                out.println("Bienvenue !");
-                out.flush();
+				//out = new PrintWriter(this.socket.getOutputStream());
+                //out.println("Bienvenue !");
+                //out.flush();
 				
 				this.socket.close();
 			}
